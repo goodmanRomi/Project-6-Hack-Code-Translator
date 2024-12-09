@@ -14,7 +14,6 @@ public class Parser {
     private String currentCommand; //current command being proccessed 
     private static final Pattern commentPattern = Pattern.compile("//.*$");//code defines a pattern that will match any text starting with "//" and continuing to the end of the line, effectively capturing single-line comments.
     private BufferedReader reader; //reads the file line by line
-    private SymbolTable symbolTable; //will check my command and put it in the symbol table if neccessary
     
 
     public Parser(String inputFile) throws IOException {
@@ -72,7 +71,6 @@ public class Parser {
     // Returns the jump mnemonic in the current C-command
     public String jump(){
        String jump = currentCommand.contains(";") ? currentCommand.split(";")[1]: "";
-        System.out.println("jump mnemonic: "+ jump);//debugging line
         return jump;
     }
 }
