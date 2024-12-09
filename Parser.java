@@ -1,83 +1,75 @@
+//The Parser class reads the input .asm file,
+//removes comments/whitespace, and provides access to individual instructions.
+
 import java.io.*;
+import java.util.regex.*; //package that represents a compiled regular expression. It provides methods for matching and manipulating text based on patterns.
 
 public class Parser {
     public static final int A_Command = 0;
     public static final int C_Command = 1;
     public static final int L_Command = 2;
 
-    private BufferedReader reader;
-    private String currentLine;
+    //private List<String> lines; //...
+    
+    private String currentCommand; //current command being proccessed 
+    private static final Pattern commentPattern = Pattern.compile("//.*$");//code defines a pattern that will match any text starting with "//" and continuing to the end of the line, effectively capturing single-line comments.
+    private BufferedReader reader; //reads the file line by line
 
     public Parser(String inputFile) throws IOException {
+        //lines = Files.readAllLines(new File(inputFile).toPath());//code snippet opens the file specified by inputFile, reads all the lines from it, and stores each line as a separate string in the lines list.
         reader = new BufferedReader(new FileReader(inputFile));
-        currentLine = " ";
+        currentCommand = null;
     }
 
     public boolean hasMoreCommands() throws IOException {
-        return reader.ready();;
+        return reader.ready(); // Returns true if there are more commands to process
     }
 
+    //assuming i have more to read, otherwise i wouldn't have called the function in the first place
     public void advance() throws IOException{
-        String line;
-        line = reader.readLine();
-        while ((line = reader.readLine()) != null) {
-            // Trim leading and trailing whitespace
-            line = line.trim(); 
-
-            // Skip empty lines and comment lines
-            if (line.isEmpty() || line.startsWith("#")) { 
-                continue; 
-            }
+        currentCommand=null; //reset current command to null, to be prepared to read the next one if availbe
+        String line = reader.readLine();//reads the next line directly         
+        //removes comments and whitespaces 
+        line = commentPattern.matcher(line).replaceAll(" ").trim();
+        if (line.isEmpty()){
+            advance(); //skip empty lines in a recursive call
+        } else {
+            currentCommand = line;
         }
     }
-    
-    public int commandType(){
-        if (currentLine.startsWith("@")) {
+
+    public int commandType(){ //this is prefct
+        if (currentCommand.startsWith("@")) {
             return A_Command;
-        } else if (currentLine.startsWith("(") && currentLine.endsWith(")")) {
+        } else if (currentCommand.startsWith("(") && currentCommand.endsWith(")")) {
             return L_Command;
         } else {
             return C_Command;
         }
     }
 
-    public String symbol(){
-        if (commandType() == A_Command) {
-            return currentLine.substring(1);
-        } else if (commandType() == L_Command) {
-            return currentLine.substring(1, currentLine.length() - 1);
-        }
-        return null;
+    // Returns the symbol of the current A or L command
+    public String symbol(){ 
+        return currentCommand.replaceAll("^[@\\(]|\\)$", ""); 
+        // Remove '@', '(' and ')';
     }
 
+    // Returns the dest mnemonic in the current C-command
     public String dest(){
-        if (commandType() == C_Command) {
-            int eqIndex = currentLine.indexOf('=');
-            return (eqIndex != -1) ? currentLine.substring(0, eqIndex).trim() : "";
-        }
-        return null;
+        return currentCommand.contains("=") ? currentCommand.split("=")[0] : ""; //condition ? value_if_true : value_if_false;
     }
 
+    // Returns the comp mnemonic in the current C-command
     public String comp(){
-        if (commandType() == C_Command) {
-            int eqIndex = currentLine.indexOf('=');
-            int scIndex = currentLine.indexOf(';');
-            if (scIndex != -1) {
-                return currentLine.substring(eqIndex + 1, scIndex).trim();
-            }
-            return currentLine.substring(eqIndex + 1).trim();
-        }
-        return null;
+        String comp=currentCommand;
+        if (comp.contains("=")) comp = comp.split("=")[1]; //[1] - refers to the secound part after the = sign
+        if (comp.contains(";")) comp = comp.split(";")[0]; //[0] - refers to the first part, before the ; sign
+        return comp;
     }
 
+    // Returns the jump mnemonic in the current C-command
     public String jump(){
-        if (commandType() == C_Command) {
-            int scIndex = currentLine.indexOf(';');
-            if (scIndex != -1) {
-                return currentLine.substring(scIndex + 1).trim();
-            }
-        }
-        return "";
+       return currentCommand.contains(";") ? currentCommand.split(";")[0]: "";
     }
 }
 
