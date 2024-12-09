@@ -8,10 +8,30 @@ public class Assembler {
     public Assembler(String inputFile){
         this.inputFile=inputFile;
         this.outputFile=inputFile.replace(".asm", ".hack");
+        this.symbolTable = new SymbolTable();
     }
 
-        public void assemble() throws IOException {
+    public void assemble() throws IOException {
+        firstPass();  // Build the symbol table
+        secondPass(); // Translate instructions to binary
+    }
+
+        public void firstPass() throws IOException {
         Parser parser = new Parser(inputFile);
+        int currentAdress=0;
+            
+        while (parser.hasMoreCommands()){
+            parser.advance();
+            int commandType = parser.commandType();
+
+            if (commandType==Parser.A_Command || commandType==Parser.C_Command) {
+                currentAdress++;
+            }
+            else if (commandType==Parser.L_Command) {
+                symbolTable.addEntry(parser.symbol(), currentAdress);
+            }
+       
+       
         Code code = new Code(); //dont use it
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         

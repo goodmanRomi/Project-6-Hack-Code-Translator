@@ -1,6 +1,6 @@
+// Binary codes for dest, comp, and jump
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Code {
     private static final Map<String, String> destMap = new HashMap<>();
@@ -8,7 +8,7 @@ public class Code {
     private static final Map<String, String> jumpMap = new HashMap<>();
 
     static {
-        // Destinations
+        // Dest
         destMap.put("", "000");     // No destination
         destMap.put("M", "001");
         destMap.put("D", "010");
@@ -18,7 +18,7 @@ public class Code {
         destMap.put("AD", "110");
         destMap.put("AMD", "111");
 
-        // Computations
+        // Comp
         compMap.put("0", "0101010");
         compMap.put("1", "0111111");
         compMap.put("-1", "0111010");
@@ -48,7 +48,7 @@ public class Code {
         compMap.put("D&M", "1000000");
         compMap.put("D|M", "1010101");
 
-        // Jumps
+        // Jump
         jumpMap.put("", "000");    // No jump
         jumpMap.put("JGT", "001");
         jumpMap.put("JEQ", "010");
@@ -59,32 +59,17 @@ public class Code {
         jumpMap.put("JMP", "111");
     }
 
-    /**
-     * Translates the dest mnemonic to its binary code.
-     *
-     * @param mnemonic the dest mnemonic (e.g., "M", "MD")
-     * @return the binary code for the dest mnemonic
-     */
+    
     public static String dest(String mnemonic) {
         return destMap.getOrDefault(mnemonic, "000");
     }
 
-    /**
-     * Translates the comp mnemonic to its binary code.
-     *
-     * @param mnemonic the comp mnemonic (e.g., "D+A", "M-1")
-     * @return the binary code for the comp mnemonic
-     */
+   
     public static String comp(String mnemonic) {
         return compMap.getOrDefault(mnemonic, "0000000");
     }
 
-    /**
-     * Translates the jump mnemonic to its binary code.
-     *
-     * @param mnemonic the jump mnemonic (e.g., "JGT", "JEQ")
-     * @return the binary code for the jump mnemonic
-     */
+    
     public static String jump(String mnemonic) {
         return jumpMap.getOrDefault(mnemonic, "000");
     }
