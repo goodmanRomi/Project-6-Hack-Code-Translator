@@ -1,12 +1,20 @@
 import java.io.*;
 
 public class Assembler {
-    public static void main(String[] args) throws IOException {
-        String inputFilename = args[0];
-        String outputFilename = inputFilename.replace(".asm", ".hack");
+
+    private String inputFile;
+    private String outputFile;
+
+    public Assembler(String inputFile){
+        this.inputFile=inputFile;
+        this.outputFile=inputFile.replace(".asm", ".hack");
+    }
+
+        public void assemble() throws IOException {
+        Parser parser = new Parser(inputFile);
+        Code code = new Code(); //dont use it
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         
-        Parser parser = new Parser(inputFilename);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilename))) {
             while (parser.hasMoreCommands()){
                 parser.advance();
                 String binaryCode=" ";
@@ -26,16 +34,13 @@ public class Assembler {
 
                     case Parser.L_Command: 
                     // Ignore L_COMMAND for now
-   
                         break;    }
                 
                     writer.write(binaryCode);
                     writer.newLine(); // Add a newline after each command
                 }
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
+                writer.close();
         }
     }
 
