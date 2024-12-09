@@ -56,8 +56,9 @@ public class Parser {
        }
 
     // Returns the dest mnemonic in the current C-command
-    public String dest(){
-        return currentCommand.contains("=") ? currentCommand.split("=")[0] : ""; //condition ? value_if_true : value_if_false;
+    public String dest() {
+        String dest=currentCommand.contains("=") ? currentCommand.split("=")[0] : ""; //condition ? value_if_true : value_if_false;
+        return dest;
     }
 
     // Returns the comp mnemonic in the current C-command
@@ -70,7 +71,9 @@ public class Parser {
 
     // Returns the jump mnemonic in the current C-command
     public String jump(){
-       return currentCommand.contains(";") ? currentCommand.split(";")[0]: "";
+       String jump = currentCommand.contains(";") ? currentCommand.split(";")[1]: "";
+        System.out.println("jump mnemonic: "+ jump);//debugging line
+        return jump;
     }
 }
 

@@ -7,7 +7,6 @@ public class Assembler {
     private SymbolTable symbolTable;
     private int symbolAddress = 16; // Starting address for variables
 
-
     public Assembler(String inputFile){
         this.inputFile=inputFile;
         this.outputFile=inputFile.replace(".asm", ".hack");
