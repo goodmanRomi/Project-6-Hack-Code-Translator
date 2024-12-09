@@ -14,6 +14,8 @@ public class Parser {
     private String currentCommand; //current command being proccessed 
     private static final Pattern commentPattern = Pattern.compile("//.*$");//code defines a pattern that will match any text starting with "//" and continuing to the end of the line, effectively capturing single-line comments.
     private BufferedReader reader; //reads the file line by line
+    private SymbolTable symbolTable; //will check my command and put it in the symbol table if neccessary
+    
 
     public Parser(String inputFile) throws IOException {
         //lines = Files.readAllLines(new File(inputFile).toPath());//code snippet opens the file specified by inputFile, reads all the lines from it, and stores each line as a separate string in the lines list.
@@ -50,9 +52,8 @@ public class Parser {
 
     // Returns the symbol of the current A or L command
     public String symbol(){ 
-        return currentCommand.replaceAll("^[@\\(]|\\)$", ""); 
-        // Remove '@', '(' and ')';
-    }
+        return currentCommand.replaceAll("^[@\\(]|\\)$", "");  // Remove '@', '(' and ')';
+       }
 
     // Returns the dest mnemonic in the current C-command
     public String dest(){
